@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+TEST
+<br>
+
+<hr>
+
+BOT:
+<div id="bot_msg">
+
+</div>
+
+<hr>
+
+<br>
+<form id="msg_box" method="post">
+  {% csrf_token %}
+  <input id="u_m" type="text" name="u_m" value="" placeholder="Bura yaz...">
+  <button type="submit">YOLLA</button>
+</form>
+
+{% endblock %}
+
+
+{% block js %}
+<script>
+
+  $('#msg_box').on('submit', function() {
+    event.preventDefault();
+    var msg_ = $('#msg_box').find('input[name="u_m"]').val();
+    $.ajax({
+      url: '{% url "chat_app:chat_json" %}',
+      type: "POST",
+      data : {msg_: msg_,
+            csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
+
+      dataType: 'json',
+      success: function(data){
+         $('#bot_msg').append(data);
+         windows.location.href = '{% url 'chat_app:chat' %}'
+      }
+    })
+  })
+
+</script>
+
+{% endblock %}
